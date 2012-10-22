@@ -96,16 +96,26 @@
 		     </RelativeLayout>
 		     
 		    <Button
-			    android:id="@+id/button1"
+			    android:id="@+id/create_task"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
 			    android:layout_alignParentBottom="true"
 			    android:layout_alignParentLeft="true"
 			    android:layout_marginLeft="38dp"
-			    android:text="Button"
+			    android:text="Create"
 			    android:onClick="onClickCreateTask"
 			    android:layout_below="@+id/choose_time_wrapper"
 			    />
+
+		     <Button
+		         android:id="@+id/cancel_task"
+		         android:layout_width="wrap_content"
+		         android:layout_height="wrap_content"
+		         android:layout_alignParentBottom="true"
+		         android:layout_toRightOf="@+id/create_task"
+		         android:onClick="onClickCancelTask"
+		         android:text="Cancel" />
+
 	     </RelativeLayout>
 
 		

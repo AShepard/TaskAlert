@@ -14,7 +14,7 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int button1=0x7f05000e;
+        public static final int cancel_task=0x7f05000e;
         public static final int choose_time_wrapper=0x7f050008;
         public static final int create_task=0x7f050002;
         public static final int description_edit=0x7f050007;

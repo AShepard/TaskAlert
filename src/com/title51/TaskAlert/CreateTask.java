@@ -15,9 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class CreateTask extends Activity {
+	//TODO:
+	private Task m_task = null;
 	
-	//used for alarm service
-	private PendingIntent pendingIntent;
 	
 	 /** Called when the activity is first created. */
     @Override
@@ -50,45 +50,42 @@ public class CreateTask extends Activity {
     	
     	long current_time, no_get, alarm_time;
     	
-    	Intent myIntent = new Intent(this, AlarmService.class);
+    	Intent myIntent = new Intent(CreateTask.this, AlarmService.class);
 
+    	//TODO: Request code, need to keep changing this
+    	PendingIntent pending_intent;
     	//getService(context, requestCode, intent, flags)
-    	pendingIntent = PendingIntent.getService(CreateTask.this, 1452145, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-    	AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-
-    	
+    	pending_intent = PendingIntent.getService(CreateTask.this, 1452145, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+	
     	GregorianCalendar calendar = new GregorianCalendar();
-    	String str_time = calendar.getTime().toString();
-    	// calendar = Calendar.getInstance();
-//TODO    	Calendar calendar2 = Calendar.getInstance();
-    	
-    	calendar.setTimeInMillis(System.currentTimeMillis());
-    	current_time = calendar.getTimeInMillis();
-    	
-    	
-//TODO    	no_get = calendar2.getTimeInMillis();
-    	
-    	calendar.add(Calendar.SECOND, 10);
+    	calendar.add(Calendar.SECOND, 5);
     	alarm_time = calendar.getTimeInMillis();
-    	String str_alarm =  calendar.getTime().toString();
-    	alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time, pendingIntent);
-
+    	
+    	m_task = new Task("Tetst", "Test Task", alarm_time, pending_intent);
+    	
+    	//String str_alarm =  calendar.getTime().toString();
+    	AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+    	alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time, pending_intent);
     	       
-    	toast("Current Time " + current_time + "   Alarm Time: " + alarm_time);
-
-    	
-    	EditText et_one = (EditText) findViewById(R.id.name_edit);
-    	//TextView et_two = (TextView) findViewById(R.id.description_header);
-    	EditText et_three = (EditText) findViewById(R.id.description_edit);
-    	
-    	et_one.setText(str_time);//String.valueOf(current_time));
-    	//et_two.setText(String.valueOf(no_get));
-    	et_three.setText(str_alarm);//String.valueOf(alarm_time));
+    	toast("Alarm Created");
     } 
     
+    //TODO change how task alarm is turned off
+    public void onClickCancelTask (View v){
+    	if(m_task == null) {
+    		toast("No current task!");
+    		return;
+    	}
+    	
+    	PendingIntent cancel_intent = m_task.getIntent();
+    	
+    	AlarmManager alarm_manager = (AlarmManager)getSystemService(ALARM_SERVICE);
+    	alarm_manager.cancel(cancel_intent);
+    	
+    	toast("Task Alarm Cancelled");
+    }
     
     private void toast(String message) {
-    	Toast.makeText (getApplicationContext(), message, Toast.LENGTH_LONG).show ();
+    	Toast.makeText (getApplicationContext(), message, Toast.LENGTH_SHORT).show ();
     }
 }

@@ -10,6 +10,9 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 
+/*
+ * TODO: Change Name and function
+ */
 public class AlarmService extends Service {
 
 
