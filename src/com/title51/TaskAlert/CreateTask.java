@@ -49,25 +49,48 @@ public class CreateTask extends Activity {
     	//toast("Click Create Task");
     	
     	long current_time, no_get, alarm_time;
-    	
+    	//TODO get name from ui
+    	String task_name = "TEST";
+    	/*
+    	 * Create Intent and Pending Intent to start alarm service
+    	 */
     	Intent myIntent = new Intent(CreateTask.this, AlarmService.class);
-
     	//TODO: Request code, need to keep changing this
     	PendingIntent pending_intent;
-    	//getService(context, requestCode, intent, flags)
     	pending_intent = PendingIntent.getService(CreateTask.this, 1452145, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 	
+    	/*
+    	 * TODO: Get date/repeating info from input
+    	 */
     	GregorianCalendar calendar = new GregorianCalendar();
     	calendar.add(Calendar.SECOND, 5);
     	alarm_time = calendar.getTimeInMillis();
     	
-    	m_task = new Task("Tetst", "Test Task", alarm_time, pending_intent);
+    	/*
+    	 * Create List of Alarms for the Task
+    	 */
+    	AlarmInfo alarm = new AlarmInfo(task_name, calendar);
     	
-    	//String str_alarm =  calendar.getTime().toString();
+    	AlarmInfoList alarm_list = new AlarmInfoList();
+    	alarm_list.addAlarm(alarm);
+    	/*
+    	 * TODO Start alarms
+    	 */
     	AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
     	alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time, pending_intent);
-    	       
-    	toast("Alarm Created");
+    	   
+    	/*
+    	 * Create Task with inputted info, including alarm that 
+    	 */
+    	m_task = new Task(task_name, alarm_list, pending_intent);
+    	
+    	AlarmInfoList list = m_task.getAlarmList(); 
+    	int list_size = list.getNumAlarms();
+    	AlarmInfo task_alarm = list.getAlarm(list_size);
+    	
+    	String name = m_task.getName();
+    	String message = "Alarms Created: " + String.valueOf(list_size-1) + " name of last alarm: " + String.valueOf(name);
+    	toast(message);
     } 
     
     //TODO change how task alarm is turned off

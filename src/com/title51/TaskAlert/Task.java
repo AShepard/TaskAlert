@@ -11,7 +11,7 @@ import android.app.PendingIntent;
  * will hold extra information if alarm is repeating (will hold list of repeating times)
  */
 public class Task {
-	private long m_alarm_time_ms = -1;
+	//TODO clean up
 	private String m_name = "";
 	private String m_description = "";
 	private boolean m_has_alarm = false;
@@ -19,20 +19,26 @@ public class Task {
 	
 	private PendingIntent m_pending_intent = null;
 	
+	//TODO Create list of AlarmInfoList
+	private AlarmInfoList m_alarm_list = null;
+	
 	//TODO repeating times/conditions
-	public Task(String name, String description, long time_ms, PendingIntent intent) {
+	public Task(String name, AlarmInfoList alarm_list, PendingIntent intent) {
 		m_name = name;
-		m_description = description;
-		m_alarm_time_ms = time_ms;
 		
+		m_alarm_list = alarm_list;
+		
+		//m_alarm_list.addAlarm(name, date)
 		m_pending_intent = intent;
 		
-		if(m_alarm_time_ms > 0) {
+		//TODO change rule
+		if(m_alarm_list.getNumAlarms() > 0) {
 			m_has_alarm = true;
 		}
 	}
 	
 	/*
+	 * TODO remove?
 	 * Convert MS time to string
 	 * Useful for printing date of Task's Alarm Time
 	 */
@@ -43,10 +49,8 @@ public class Task {
 		
 		String str_date = "";
 		
-		GregorianCalendar calendar = new GregorianCalendar();
-		calendar.setTimeInMillis(m_alarm_time_ms);
 		
-		str_date = calendar.getTime().toString(); 
+		//str_date = calendar.getTime().toString(); 
 		return str_date;
 	}
 	
@@ -58,8 +62,9 @@ public class Task {
 		return m_description;
 	}
 	
+	//TODO add logic to determine next alarm date?s
 	public long getTimeMs() {
-		return m_alarm_time_ms;
+		return 0;
 	}
 	
 	public boolean hasAlarm() {
@@ -68,6 +73,10 @@ public class Task {
 	
 	public boolean isRepeating() {
 		return m_is_repeating;
+	}
+	
+	public AlarmInfoList getAlarmList() {
+		return m_alarm_list;
 	}
 	
 	public PendingIntent getIntent() {
