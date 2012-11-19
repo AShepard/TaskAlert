@@ -17,5 +17,6 @@ public class AlarmEventActivity extends Activity{
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.alarm_event);
         
+        //TODO: get info for next alarm and start that
     }
 }

@@ -1,123 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/main_screen"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_screen"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/edit_text_wrapper"
 	    android:orientation="vertical"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    >
-	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:id="@+id/edit_text_wrapper"
-		    android:orientation="vertical"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    >
-		    <TextView
-		        android:id="@+id/name_header"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text="Name" />
-		    <EditText
-		        android:id="@+id/name_edit"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text="Name" 
-		        android:inputType="text"
-		    	android:layout_below="@+id/name_header"
-		    	/>
-		    <TextView
-		        android:id="@+id/description_header"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text="Description" 
-		        android:layout_below="@+id/name_edit"
-		        />
-	    	<EditText
-		        android:id="@+id/description_edit"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text="Name" 
-		        android:inputType="text"
-		        android:layout_below="@+id/description_header"
-		        />
-		    
-		</RelativeLayout>
-		
-		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:id="@+id/choose_time_wrapper"
-		    android:orientation="vertical"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_below="@+id/edit_text_wrapper"
-		    >
-			<TextView
-			        android:id="@+id/time_header"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:text="Choose a time" />
-			<ToggleButton
-			    android:id="@+id/toggleButton1"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:textOn="AM" 
-			    android:textOff="PM" 
-			    android:layout_below="@+id/time_header"/>
-		</RelativeLayout>
-		
-		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:id="@+id/recurring_wrapper"
-		    android:orientation="vertical"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_below="@+id/choose_time_wrapper"
-		    >
-		    <CheckBox
-		        
-		        android:id="@+id/recurring_header"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text="Check to make recurring" 
-		        android:onClick="checkRecurring"/>
-		    
-		    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			    android:id="@+id/week_days_wrapper"
-			    android:orientation="horizontal"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    android:layout_below="@+id/recurring_header"
-			    >
-			    <CheckBox
-			        android:id="@+id/recurring_header"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:text="Check to make recurring" 
-			        ></CheckBox>
-			    
-		     </RelativeLayout>
-		     
-		    <Button
-			    android:id="@+id/create_task"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:layout_alignParentBottom="true"
-			    android:layout_alignParentLeft="true"
-			    android:layout_marginLeft="38dp"
-			    android:text="Create"
-			    android:onClick="onClickCreateTask"
-			    android:layout_below="@+id/choose_time_wrapper"
-			    />
-
-		     <Button
-		         android:id="@+id/cancel_task"
-		         android:layout_width="wrap_content"
-		         android:layout_height="wrap_content"
-		         android:layout_alignParentBottom="true"
-		         android:layout_toRightOf="@+id/create_task"
-		         android:onClick="onClickCancelTask"
-		         android:text="Cancel" />
-
-	     </RelativeLayout>
-
-		
-
+	    <TextView
+	        android:id="@+id/name_header"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="Name" />
+	    <EditText
+	        android:id="@+id/name_edit"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:inputType="text"
+	    	android:layout_below="@+id/name_header"
+	    	/>
+	    <TextView
+	        android:id="@+id/description_header"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="Description" 
+	        android:layout_below="@+id/name_edit"
+	        />
+    	<EditText
+	        android:id="@+id/description_edit"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:inputType="text"
+	        android:layout_below="@+id/description_header"
+	        />
+	    
 	</RelativeLayout>
+	
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/alarm_wrapper"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/edit_text_wrapper"
+	    >
+    	
+    	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/alarm_list"
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    
+		    >
+		</RelativeLayout>
+		
+	    <Button
+	        
+	        android:id="@+id/b_add_alarm"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="Add Alarm" 
+	        android:onClick="onAddAlarm"
+	        android:layout_below="@+id/alarm_list"
+	     />
+	    
+    </RelativeLayout>
+    
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/action_wrapperr"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/alarm_wrapper"
+	    >
+	
+	    <Button
+		    android:id="@+id/create_task"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentBottom="true"
+		    android:layout_alignParentLeft="true"
+		    android:layout_marginLeft="38dp"
+		    android:text="Create"
+		    android:onClick="onClickCreateTask"
+		    />
+
+	     <Button
+	         android:id="@+id/cancel_task"
+	         android:layout_width="wrap_content"
+	         android:layout_height="wrap_content"
+	         android:layout_alignParentBottom="true"
+	         android:layout_toRightOf="@+id/create_task"
+	         android:onClick="onClickCancelTask"
+	         android:text="Cancel" />
+
+     </RelativeLayout>
+
+	
+
+</RelativeLayout>

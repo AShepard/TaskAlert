@@ -7,6 +7,7 @@ import com.title51.TaskAlert.Alarm.AlarmInfo;
 import com.title51.TaskAlert.Alarm.AlarmInfoList;
 import com.title51.TaskAlert.Alarm.AlarmService;
 import com.title51.TaskAlert.Task.Task;
+import com.title51.TaskAlert.Task.TaskAlarm;
 import com.title51.TaskAlert.Task.TaskIntentFields;
 import com.title51.TaskAlert.Task.TaskRow;
 
@@ -16,14 +17,16 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class CreateTask extends Activity implements TaskIntentFields {
-	//TODO:
+	
 	private Task m_task = null;
 	private EditText m_name = null;
 	private EditText m_description = null;
@@ -37,42 +40,98 @@ public class CreateTask extends Activity implements TaskIntentFields {
         m_description = (EditText) findViewById(R.id.description_edit);
     }
     
-    public void checkRecurring(View v)
+    public void onAddAlarm(View v)
     {
-    	CheckBox  cb_recurring = (CheckBox) v;
+    	/*
+    	 * Create alarm and add view to alarm container
+    	 */
+    	Button  b_add = (Button) v;
     	
-    	if(cb_recurring == null) {
+    	if(b_add == null) {
     		//ERROR
     		toast("Error: checkbox is null");
     	}
     	
-    	//make recurring
-    	if(cb_recurring.isChecked()) {
-    		toast("Recurring");
-    	} else {
-    		//not recurring
-    		toast("NOT Recurring");
+    	addAlarm();
+    }
+    
+    public void addAlarm() {
+    	//TODO: open up dialogue to create alarm or cancel
+    	boolean create_alarm = createAlarm();
+    	
+    	if(create_alarm == true) {
+    		addAlarmView();
     	}
+    }
+    
+    public boolean createAlarm() {
+    	//TODO: pop up menu allows user to add an alarm, or cancel
+    	//TODO: will need to trigger create alarm view or cancel via onCreateAlarm, onCancelAlarm methods 
+    	boolean create_alarm = true;
+    	
+    	return create_alarm;
+    }
+    
+    public void addAlarmView() {
+    	//Add alarm info to screen
+    	RelativeLayout alarm_container=(RelativeLayout)findViewById(R.id.alarm_list);
+    	
+    	//create alarm view object
+    	TaskAlarm alarm_view = new TaskAlarm(getApplicationContext());
+    	View view = (View) alarm_view.getView();
+    	
+    	//add as second to last so that "add alarm" button is always on the bottom
+    	alarm_container.addView(view);
     }
     
     public void onClickCreateTask (View v){
     	//toast("Click Create Task");
     	
-    	long current_time, no_get, alarm_time;
-    	//TODO get name from ui
+    	//get name from ui
     	String task_name = getName();
-    	
-    	
 
     	/*
-    	 * TODO: Place starting alarm in own function
-    	 * TODO: Get date/repeating info from input
+    	 * Extract alarm rules from input
     	 */
+    	AlarmInfoList alarm_list = getAlarmRules();
+    	
+    	
+    	/*
+    	 * Create Task with inputted info, including alarm that 
+    	 */
+    	m_task = new Task(task_name, alarm_list);
+    	
+    	AlarmInfoList list = m_task.getAlarmList(); 
+    	int list_size = list.getNumAlarms();
+    	AlarmInfo task_alarm = list.getAlarm(list_size);
+    	
+    	String name = m_task.getName();
+    	String message = "Alarms Created: " + String.valueOf(list_size-1) + " name of last alarm: " + String.valueOf(name);
+    	toast(message);
+    	
+    	finish(m_task);
+    } 
+    
+    public AlarmInfoList getAlarmRules() {
+    	/*
+    	 *TODO  Return empty list if no alarms
+    	 */
+    	
+    	
+    	
+    	/*
+    	 * Get number of alarms from layout
+    	 * Then for each alarm, start and record alarm info
+    	 */
+    	RelativeLayout rl_alarm_wrapper = (RelativeLayout)findViewById(R.id.alarm_list);
+    	int num_alarms = rl_alarm_wrapper.getChildCount();
+    	
     	//TODO: GregorianCalendar calendar = new GregorianCalendar();
-    	Calendar calendar = Calendar.getInstance();
+    	GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
     	String old_time = calendar.getTime().toString();
+    	
     	calendar.add(Calendar.SECOND, 5);
-    	alarm_time = calendar.getTimeInMillis();
+    	long alarm_time = calendar.getTimeInMillis();
     	
     	/*
     	 * Create Intent and Pending Intent to start alarm service
@@ -82,41 +141,25 @@ public class CreateTask extends Activity implements TaskIntentFields {
     	PendingIntent pending_intent;
     	pending_intent = PendingIntent.getActivity(this, 12341, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 	
-    	
     	/*
-    	 * TODO Start alarms
+    	 * Start alarms
     	 */
     	AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
     	alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time, pending_intent);
     	   
     	/*
+    	 * 
     	 * Create List of Alarms for the Task
     	 */
-    	
     	//Create TaskRow gui object and assign to alarm
     	TaskRow row = new TaskRow(getApplicationContext());
-    	//AlarmInfo alarm = new AlarmInfo(task_name, calendar, row);
+    	AlarmInfo alarm = new AlarmInfo("Single", calendar, row);
     	
     	AlarmInfoList alarm_list = new AlarmInfoList();
-    	//alarm_list.addAlarm(alarm);
+    	alarm_list.addAlarm(alarm);
     	
-    	
-    	/*
-    	 * Create Task with inputted info, including alarm that 
-    	 */
-    	m_task = new Task(task_name, alarm_list, pending_intent);
-    	
-    	AlarmInfoList list = m_task.getAlarmList(); 
-    	int list_size = list.getNumAlarms();
-    	AlarmInfo task_alarm = list.getAlarm(list_size);
-    	
-    	String name = m_task.getName();
-    	String message = "New: " + calendar.getTime().toString() + "    old: "+ old_time;//"Alarms Created: " + String.valueOf(list_size-1) + " name of last alarm: " + String.valueOf(name);
-    	toast(message);
-    	
-    	
-    	//finish(m_task);
-    } 
+    	return alarm_list;
+    }
     
     public void finish(Task task) {
     	
@@ -156,17 +199,17 @@ public class CreateTask extends Activity implements TaskIntentFields {
     		toast("No current task!");
     		return;
     	}
-    	
+    	/*
     	PendingIntent cancel_intent = m_task.getIntent();
     	
     	AlarmManager alarm_manager = (AlarmManager)getSystemService(ALARM_SERVICE);
     	alarm_manager.cancel(cancel_intent);
-    	
-    	toast("Task Alarm Cancelled");
+    	*/
+    	toast("TODO: Task Alarm Cancelled");
     	
     }
     
     private void toast(String message) {
-    	Toast.makeText (getApplicationContext(), message, Toast.LENGTH_LONG).show ();
+    	Toast.makeText (getApplicationContext(), message, Toast.LENGTH_SHORT).show ();
     }
 }

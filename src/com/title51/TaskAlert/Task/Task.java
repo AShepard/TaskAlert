@@ -5,7 +5,6 @@ import java.util.GregorianCalendar;
 
 import com.title51.TaskAlert.Alarm.AlarmInfoList;
 
-import android.app.PendingIntent;
 
 
 /*
@@ -19,19 +18,17 @@ public class Task {
 	private boolean m_has_alarm = false;
 	private boolean m_is_repeating = false;
 	
-	private PendingIntent m_pending_intent = null;
 	
 	//TODO Create list of AlarmInfoList
 	private AlarmInfoList m_alarm_list = null;
 	
 	//TODO repeating times/conditions
-	public Task(String name, AlarmInfoList alarm_list, PendingIntent intent) {
+	public Task(String name, AlarmInfoList alarm_list) {
 		m_name = name;
 		
 		m_alarm_list = alarm_list;
 		
 		//m_alarm_list.addAlarm(name, date)
-		m_pending_intent = intent;
 		
 		//TODO change rule
 		if(m_alarm_list.getNumAlarms() > 0) {
@@ -81,7 +78,4 @@ public class Task {
 		return m_alarm_list;
 	}
 	
-	public PendingIntent getIntent() {
-		return m_pending_intent;
-	}
 }
