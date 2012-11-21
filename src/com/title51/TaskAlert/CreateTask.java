@@ -13,10 +13,15 @@ import com.title51.TaskAlert.Task.TaskRow;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -30,7 +35,8 @@ public class CreateTask extends Activity implements TaskIntentFields {
 	private Task m_task = null;
 	private EditText m_name = null;
 	private EditText m_description = null;
-	
+	private Dialog m_dialog = null;
+	private RelativeLayout m_alarm_container = null;
 	 /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,8 @@ public class CreateTask extends Activity implements TaskIntentFields {
         setContentView(R.layout.task_form);
         m_name = (EditText) findViewById(R.id.name_edit);
         m_description = (EditText) findViewById(R.id.description_edit);
+
+    	m_alarm_container=(RelativeLayout)findViewById(R.id.alarm_list);
     }
     
     public void onAddAlarm(View v)
@@ -46,42 +54,83 @@ public class CreateTask extends Activity implements TaskIntentFields {
     	 * Create alarm and add view to alarm container
     	 */
     	Button  b_add = (Button) v;
-    	
+    	toast("onAddAlarm");
     	if(b_add == null) {
     		//ERROR
     		toast("Error: checkbox is null");
     	}
     	
-    	addAlarm();
+    	createAlarm();
     }
     
-    public void addAlarm() {
-    	//TODO: open up dialogue to create alarm or cancel
-    	boolean create_alarm = createAlarm();
+    //http://androidresearch.wordpress.com/2012/04/16/creating-and-displaying-a-custom-dialog-in-android/
+    public void createAlarm() {
+    	/*
+    	 * Dialog menu allows user to add an alarm, or cancel
+    	 */
     	
-    	if(create_alarm == true) {
-    		addAlarmView();
-    	}
+    	Context context=CreateTask.this;
+    	
+    	m_dialog=new Dialog(context);
+    	m_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+    	m_dialog.setContentView(R.layout.alarm_dialog);
+    	
+
+    	/*
+    	 * set up buttons for creating/cancelling
+    	 */
+        Button button_create = (Button) m_dialog.findViewById(R.id.create_alarm);
+        button_create.setOnClickListener(new OnClickListener() {
+        @Override
+            public void onClick(View v) {
+        	onAddAlarmView(v);
+            }
+        });
+        
+        Button button_cancel = (Button) m_dialog.findViewById(R.id.cancel_alarm);
+        button_cancel.setOnClickListener(new OnClickListener() {
+        @Override
+            public void onClick(View v) {
+        		onCancelAddAlarm(v);
+            }
+        });
+        
+        m_dialog.show();
+        
     }
     
-    public boolean createAlarm() {
-    	//TODO: pop up menu allows user to add an alarm, or cancel
-    	//TODO: will need to trigger create alarm view or cancel via onCreateAlarm, onCancelAlarm methods 
-    	boolean create_alarm = true;
+    
+    public void onAddAlarmView(View v) {
+    	/*
+    	 * Close dialog menu
+    	 * add alarm view to layout
+    	 */
+    	m_dialog.dismiss();
+    	m_dialog = null;
     	
-    	return create_alarm;
+    	addAlarmView();
     }
+    
+    public void onCancelAddAlarm(View v) {
+    	/*
+    	 * Close dialog menu
+    	 */
+    	m_dialog.dismiss();
+    	m_dialog = null;
+    	
+    }
+    
     
     public void addAlarmView() {
     	//Add alarm info to screen
-    	RelativeLayout alarm_container=(RelativeLayout)findViewById(R.id.alarm_list);
     	
     	//create alarm view object
     	TaskAlarm alarm_view = new TaskAlarm(getApplicationContext());
     	View view = (View) alarm_view.getView();
     	
     	//add as second to last so that "add alarm" button is always on the bottom
-    	alarm_container.addView(view);
+    	m_alarm_container.addView(view);
     }
     
     public void onClickCreateTask (View v){
