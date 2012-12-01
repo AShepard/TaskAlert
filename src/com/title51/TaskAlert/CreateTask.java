@@ -1,5 +1,6 @@
 package com.title51.TaskAlert;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -22,10 +23,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +40,9 @@ public class CreateTask extends Activity implements TaskIntentFields {
 	private EditText m_name = null;
 	private EditText m_description = null;
 	private Dialog m_dialog = null;
-	private RelativeLayout m_alarm_container = null;
+	private ListView m_alarm_container = null;
+	
+	private int m_counter = 0;
 	 /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +51,10 @@ public class CreateTask extends Activity implements TaskIntentFields {
         m_name = (EditText) findViewById(R.id.name_edit);
         m_description = (EditText) findViewById(R.id.description_edit);
 
-    	m_alarm_container=(RelativeLayout)findViewById(R.id.alarm_list);
+    	m_alarm_container=(ListView)findViewById(R.id.alarm_list);
+    	ListAdapter list_adapter = m_alarm_container.getAdapter();
+
+    	
     }
     
     public void onAddAlarm(View v)
@@ -53,6 +62,7 @@ public class CreateTask extends Activity implements TaskIntentFields {
     	/*
     	 * Create alarm and add view to alarm container
     	 */
+    
     	Button  b_add = (Button) v;
     	toast("onAddAlarm");
     	if(b_add == null) {
@@ -84,7 +94,7 @@ public class CreateTask extends Activity implements TaskIntentFields {
         button_create.setOnClickListener(new OnClickListener() {
         @Override
             public void onClick(View v) {
-        	onAddAlarmView(v);
+        		onAddAlarmView(v);
             }
         });
         
@@ -97,7 +107,6 @@ public class CreateTask extends Activity implements TaskIntentFields {
         });
         
         m_dialog.show();
-        
     }
     
     
@@ -127,10 +136,40 @@ public class CreateTask extends Activity implements TaskIntentFields {
     	
     	//create alarm view object
     	TaskAlarm alarm_view = new TaskAlarm(getApplicationContext());
+    	alarm_view.setText(Integer.toString(m_counter));
     	View view = (View) alarm_view.getView();
+    	m_counter++;
     	
     	//add as second to last so that "add alarm" button is always on the bottom
-    	m_alarm_container.addView(view);
+    	ListAdapter adapter = (ListAdapter)m_alarm_container.getAdapter();
+    	
+    	ArrayList<View> list_array = new ArrayList<View>();
+    	list_array.add(view);
+    	//ArrayAdapter<View> array_adapter = getArrayAdapater(adapter);
+    	ArrayAdapter<View> array_adapter = new ArrayAdapter<View>(this, R.layout.alarm_info,  list_array);
+    	
+    	m_alarm_container.setAdapter((ListAdapter)array_adapter);
+    }
+    
+    //TODO: need to find out how to copy elements from ListAdapter to ArrayAdapter
+    //TODO: move this
+    public ArrayAdapter<View> getArrayAdapater(ListAdapter adapter) {
+    	ArrayAdapter<View> array_adapter = new ArrayAdapter<View>(this,523535);
+    	
+    	
+    	int num_elements = 0;
+    	
+    	if(adapter==null) {
+    		num_elements = 0;
+    	} else {
+    		adapter.getCount();
+    	}
+    	
+    	for(int i = 0; i<num_elements; i++) {
+    		View v = null;
+    		array_adapter.add(adapter.getView(i, v, null));
+    	}
+    	return array_adapter;
     }
     
     public void onClickCreateTask (View v){
@@ -165,7 +204,6 @@ public class CreateTask extends Activity implements TaskIntentFields {
     	/*
     	 *TODO  Return empty list if no alarms
     	 */
-    	
     	
     	
     	/*
