@@ -41,6 +41,8 @@
 	    
 	</RelativeLayout>
 	
+     
+     
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:id="@+id/alarm_wrapper"
 	    android:orientation="vertical"
@@ -48,58 +50,61 @@
 	    android:layout_height="wrap_content"
 	    android:layout_below="@+id/edit_text_wrapper"
 	    >
-    	
-    	<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:id="@+id/alarm_list"
-		    android:orientation="vertical"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    
-		    >
-		</ListView>
-		
-	    <Button
-	        
+    	<Button
 	        android:id="@+id/b_add_alarm"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:text="Add Alarm" 
 	        android:onClick="onAddAlarm"
-	        android:layout_below="@+id/alarm_list"
+	        
 	     />
-	    
-    </RelativeLayout>
-    
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/action_wrapperr"
-	    android:orientation="vertical"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/alarm_wrapper"
-	    >
-	
-	    <Button
-		    android:id="@+id/create_task"
+    	<ScrollView
+    	    android:id="@+id/alarm_scroll"
+    		android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content"
+	    	android:fillViewport="true"
+	    	android:layout_below="@+id/b_add_alarm"
+   			>
+	    	<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+			    android:id="@+id/android:list"
+			    android:orientation="vertical"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    >
+			</ListView>
+	   	</ScrollView>
+	   	
+	   	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/action_wrapper"
+		    android:orientation="vertical"
+		    android:layout_alignParentBottom="true"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:layout_alignParentBottom="true"
-		    android:layout_alignParentLeft="true"
-		    android:layout_marginLeft="38dp"
-		    android:text="Create"
-		    android:onClick="onClickCreateTask"
-		    />
-
-	     <Button
-	         android:id="@+id/cancel_task"
-	         android:layout_width="wrap_content"
-	         android:layout_height="wrap_content"
-	         android:layout_alignParentBottom="true"
-	         android:layout_toRightOf="@+id/create_task"
-	         android:onClick="onClickCancelTask"
-	         android:text="Cancel" />
-
-     </RelativeLayout>
-
+		    >
+		    <Button
+			    android:id="@+id/create_task"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_alignParentLeft="true"
+			    android:layout_marginLeft="38dp"
+			    android:text="Create"
+			    android:onClick="onClickCreateTask"
+			    />
+		
+	     	<Button
+		         android:id="@+id/cancel_task"
+		         android:layout_width="wrap_content"
+		         android:layout_height="wrap_content"
+		         android:layout_toRightOf="@+id/create_task"
+		         android:onClick="onClickCancelTask"
+		         android:text="Cancel" 
+		      	 />
+	   	</RelativeLayout>
+    	
+   	 </RelativeLayout>
+    
+   
+	
 	
 
 </RelativeLayout>

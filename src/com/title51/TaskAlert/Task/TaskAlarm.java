@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+//TODO rename: something like TaskEvent?
 public class TaskAlarm  extends LinearLayout {
 	private TextView tvText;
 	private RelativeLayout m_row_view;

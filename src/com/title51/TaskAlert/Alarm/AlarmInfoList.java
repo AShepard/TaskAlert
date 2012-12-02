@@ -17,10 +17,10 @@ public class AlarmInfoList {
 		m_alarm_list.add(alarm);
 	}
 	
-	public void addAlarm(String info, GregorianCalendar date, TaskRow row) {
+	public void addAlarm(String info, GregorianCalendar date) {
 		String alarm_info = info;
 		GregorianCalendar alarm_date = date;
-		AlarmInfo alarm = new AlarmInfo(alarm_info, alarm_date, row);
+		AlarmInfo alarm = new AlarmInfo(alarm_info, alarm_date);
 		
 		addAlarm(alarm);
 	}

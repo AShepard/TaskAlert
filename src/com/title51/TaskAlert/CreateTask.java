@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 
 import com.title51.TaskAlert.Alarm.AlarmInfo;
 import com.title51.TaskAlert.Alarm.AlarmInfoList;
+import com.title51.TaskAlert.Alarm.AlarmListAdapter;
 import com.title51.TaskAlert.Alarm.AlarmService;
 import com.title51.TaskAlert.Task.Task;
 import com.title51.TaskAlert.Task.TaskAlarm;
@@ -15,6 +16,7 @@ import com.title51.TaskAlert.Task.TaskRow;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.ListActivity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -34,27 +36,40 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CreateTask extends Activity implements TaskIntentFields {
+public class CreateTask extends ListActivity implements TaskIntentFields {
 	
 	private Task m_task = null;
+	
 	private EditText m_name = null;
 	private EditText m_description = null;
-	private Dialog m_dialog = null;
-	private ListView m_alarm_container = null;
 	
+	private Dialog m_dialog = null;
+	//private ListView m_alarm_container = null;
+	
+	private AlarmListAdapter m_list_adapter = null;
+	private ArrayList<AlarmInfo> m_alarm_list = null;
+	
+	private AlarmInfoList m_alarm_info_list = null;
+	
+	//TODO remove
 	private int m_counter = 0;
 	 /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_form);
+        
         m_name = (EditText) findViewById(R.id.name_edit);
         m_description = (EditText) findViewById(R.id.description_edit);
 
-    	m_alarm_container=(ListView)findViewById(R.id.alarm_list);
-    	ListAdapter list_adapter = m_alarm_container.getAdapter();
-
+        /*
+         * TODO: Need to get Task info and alarm list from calling activity
+         */
+        m_alarm_list = new ArrayList<AlarmInfo>();
+    	//m_alarm_container=(ListView)findViewById(R.id.alarm_list);
+    	m_list_adapter = new AlarmListAdapter(this, R.layout.alarm_info, m_alarm_list);
     	
+    	setListAdapter(m_list_adapter);
     }
     
     public void onAddAlarm(View v)
@@ -138,17 +153,18 @@ public class CreateTask extends Activity implements TaskIntentFields {
     	TaskAlarm alarm_view = new TaskAlarm(getApplicationContext());
     	alarm_view.setText(Integer.toString(m_counter));
     	View view = (View) alarm_view.getView();
+    	
+    	
+    	AlarmInfo alarm_info = new AlarmInfo(Integer.toString(m_counter), null);
+    	
+            
+    	
+    	m_alarm_list.add(alarm_info);
+    	
+        m_list_adapter.notifyDataSetChanged();
+        
     	m_counter++;
-    	
-    	//add as second to last so that "add alarm" button is always on the bottom
-    	ListAdapter adapter = (ListAdapter)m_alarm_container.getAdapter();
-    	
-    	ArrayList<View> list_array = new ArrayList<View>();
-    	list_array.add(view);
-    	//ArrayAdapter<View> array_adapter = getArrayAdapater(adapter);
-    	ArrayAdapter<View> array_adapter = new ArrayAdapter<View>(this, R.layout.alarm_info,  list_array);
-    	
-    	m_alarm_container.setAdapter((ListAdapter)array_adapter);
+
     }
     
     //TODO: need to find out how to copy elements from ListAdapter to ArrayAdapter
@@ -210,9 +226,14 @@ public class CreateTask extends Activity implements TaskIntentFields {
     	 * Get number of alarms from layout
     	 * Then for each alarm, start and record alarm info
     	 */
-    	RelativeLayout rl_alarm_wrapper = (RelativeLayout)findViewById(R.id.alarm_list);
-    	int num_alarms = rl_alarm_wrapper.getChildCount();
+    	//RelativeLayout rl_alarm_wrapper = (RelativeLayout)findViewById(android.R.id.list);
+    	//int num_alarms = rl_alarm_wrapper.getChildCount();
+    	int num_alarms = m_list_adapter.getCount();
     	
+    	AlarmInfoList alarm_list = new AlarmInfoList();
+    	
+    	alarm
+    	Task task = new Task(name, alarm_list)
     	//TODO: GregorianCalendar calendar = new GregorianCalendar();
     	GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
     	String old_time = calendar.getTime().toString();
@@ -240,12 +261,15 @@ public class CreateTask extends Activity implements TaskIntentFields {
     	 */
     	//Create TaskRow gui object and assign to alarm
     	TaskRow row = new TaskRow(getApplicationContext());
-    	AlarmInfo alarm = new AlarmInfo("Single", calendar, row);
+    	AlarmInfo alarm = new AlarmInfo("Single", calendar);
     	
-    	AlarmInfoList alarm_list = new AlarmInfoList();
-    	alarm_list.addAlarm(alarm);
+    	
     	
     	return alarm_list;
+    }
+    
+    public void startAlarm() {
+    	
     }
     
     public void finish(Task task) {
