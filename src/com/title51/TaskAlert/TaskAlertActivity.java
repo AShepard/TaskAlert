@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 public class TaskAlertActivity extends Activity implements TaskIntentFields  {
     /** Called when the activity is first created. */
 	
+	//TODO change taskrow
 	private TaskRow m_task;
 	private LinearLayout m_layout_container;
 	
@@ -42,6 +43,7 @@ public class TaskAlertActivity extends Activity implements TaskIntentFields  {
         startActivityForResult(create_task,CREATE_TASK);
     }
     
+    //TODO: change how we get info from create task
     protected void onActivityResult(int request_code, int result_code, Intent data)
     {
     	switch(request_code) {
@@ -55,15 +57,12 @@ public class TaskAlertActivity extends Activity implements TaskIntentFields  {
     }
     
     //TODO change to Next_Alarm info instead of num alarms
-    public void addRowView(String name, String num_alarms) {
+    public void addRowView(String name) {
     	
         m_task = new TaskRow(getApplicationContext());
         View view = (View) m_task.getRowView();
         m_layout_container.addView(view);
         m_task.setName(name);
-        m_task.setNumAlarms(num_alarms);
-        
-        
     }
     
     /*
@@ -74,8 +73,18 @@ public class TaskAlertActivity extends Activity implements TaskIntentFields  {
     	Bundle extras = data.getExtras();
     	
     	String name = extras.getString(TASK_NAME);
-    	String alarms = extras.getString(NUMBER_ALARMS);
+    	int option= extras.getInt(UPDATE_FLAG);
     	
-    	addRowView(name, alarms);
+    	switch(option) {
+    		case ADD_TASK:
+    			addRowView(name);
+    			break;
+    		case EDIT_TASK:
+    			break;
+    		case NO_TASK:
+    			break;
+    		default:
+    			break;
+    	}
     }
 }

@@ -103,7 +103,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	
 
     	/*
-    	 * set up buttons for creating/cancelling
+    	 * set up buttons for creating/canceling
     	 */
         Button button_create = (Button) m_dialog.findViewById(R.id.create_alarm);
         button_create.setOnClickListener(new OnClickListener() {
@@ -195,13 +195,12 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	String task_name = getName();
 
     	/*
-    	 * Extract alarm rules from input
+    	 * Get list of alarm rules and start them
     	 */
     	AlarmInfoList alarm_list = getAlarmRules();
     	
-    	
     	/*
-    	 * Create Task with inputted info, including alarm that 
+    	 * Create Task with inputed info, including alarm that 
     	 */
     	m_task = new Task(task_name, alarm_list);
     	
@@ -217,59 +216,50 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     } 
     
     public AlarmInfoList getAlarmRules() {
+    	if(m_alarm_list.size() != m_list_adapter.getCount()) {
+    		//ERROR
+    		toast("ERROR: alarm_list != list_adapter element count");
+    	}
+    	
     	/*
-    	 *TODO  Return empty list if no alarms
+    	 * Get alarms from list, start their alarms
     	 */
     	
-    	
-    	/*
-    	 * Get number of alarms from layout
-    	 * Then for each alarm, start and record alarm info
-    	 */
-    	//RelativeLayout rl_alarm_wrapper = (RelativeLayout)findViewById(android.R.id.list);
-    	//int num_alarms = rl_alarm_wrapper.getChildCount();
-    	int num_alarms = m_list_adapter.getCount();
-    	
+    	int num_alarms = m_alarm_list.size();
     	AlarmInfoList alarm_list = new AlarmInfoList();
     	
-    	alarm
-    	Task task = new Task(name, alarm_list)
-    	//TODO: GregorianCalendar calendar = new GregorianCalendar();
-    	GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
-    	String old_time = calendar.getTime().toString();
+    	for(int i=0; i<num_alarms; i++) {
+    		AlarmInfo alarm = m_alarm_list.get(i);
+    		alarm_list.addAlarm(alarm);
+    		//TODO start alarms
+    		/*
+		    	//Create Intent and Pending Intent to start alarm service
+		    	startAlarm(intent, alarm_time);
+    		 */
+    	}
     	
-    	calendar.add(Calendar.SECOND, 5);
-    	long alarm_time = calendar.getTimeInMillis();
-    	
-    	/*
-    	 * Create Intent and Pending Intent to start alarm service
-    	 */
-    	Intent myIntent = new Intent(this, AlarmEventActivity.class);
+    	return alarm_list;
+    }
+    
+    /*
+     * Pass intent to be run on alarm time
+     * pass alarm time
+     * starts alarm and will run the intent (will only start if alarm not yet already started)
+     */
+    public void startAlarm(AlarmInfo alarm) {
+    	long alarm_time = -1;
+    	//TODO: get next alarm time based on rule/time
+    	//getNextAlarmTime(alarm)
+    	Intent intent = new Intent(this, AlarmEventActivity.class);
     	//TODO: Request code, need to keep changing this
     	PendingIntent pending_intent;
-    	pending_intent = PendingIntent.getActivity(this, 12341, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+    	pending_intent = PendingIntent.getActivity(this, 12341, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 	
     	/*
     	 * Start alarms
     	 */
     	AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
     	alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time, pending_intent);
-    	   
-    	/*
-    	 * 
-    	 * Create List of Alarms for the Task
-    	 */
-    	//Create TaskRow gui object and assign to alarm
-    	TaskRow row = new TaskRow(getApplicationContext());
-    	AlarmInfo alarm = new AlarmInfo("Single", calendar);
-    	
-    	
-    	
-    	return alarm_list;
-    }
-    
-    public void startAlarm() {
-    	
     }
     
     public void finish(Task task) {
@@ -277,10 +267,10 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	Intent intent = this.getIntent();
     	
     	if(task!=null) {
-	    	int size = m_task.getAlarmList().getNumAlarms() - 1;
+	    	insertIntoXML(task);
 	    	
+	    	//TODO remove
 			intent.putExtra(TASK_NAME, String.valueOf(task.getName()));
-			intent.putExtra(NUMBER_ALARMS, String.valueOf(size));
 			
 			this.setResult(RESULT_OK, intent);
 		} else {
@@ -290,6 +280,19 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
 		finish();
     }
     
+    /*
+     * TODO: Insert into XML
+     */
+    public void insertIntoXML(Task task) {
+    	int size = m_task.getAlarmList().getNumAlarms();
+    	//insert info into XML file
+    	for(int i=0; i<size; i++) {
+    		//TODO: place info
+    		
+    	}
+    }
+    
+    //TODO: test
     public String getName() {
     	String name = "";
     	
