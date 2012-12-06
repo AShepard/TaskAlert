@@ -12,10 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 //http://www.softwarepassion.com/android-series-custom-listview-items-and-adapters/
-public class AlarmListAdapter extends ArrayAdapter<AlarmInfo> {
-	private ArrayList<AlarmInfo> items;
+public class AlarmListAdapter extends ArrayAdapter<Alarm> {
+	private ArrayList<Alarm> items;
 
-    public AlarmListAdapter(Context context, int textViewResourceId, ArrayList<AlarmInfo> items) {
+    public AlarmListAdapter(Context context, int textViewResourceId, ArrayList<Alarm> items) {
             super(context, textViewResourceId, items);
             this.items = items;
     }
@@ -28,7 +28,7 @@ public class AlarmListAdapter extends ArrayAdapter<AlarmInfo> {
                 LayoutInflater vi = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(R.layout.row, null);
             }
-            AlarmInfo alarm_info = items.get(position);
+            Alarm alarm_info = items.get(position);
             if (alarm_info != null) {
                     TextView tv = (TextView) v.findViewById(R.id.tv_info);
                     if (tv != null) {

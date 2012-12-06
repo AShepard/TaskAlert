@@ -3,7 +3,8 @@ package com.title51.TaskAlert.Task;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.title51.TaskAlert.Alarm.AlarmInfoList;
+import com.title51.TaskAlert.Alarm.Alarm;
+import com.title51.TaskAlert.Alarm.AlarmList;
 
 
 
@@ -18,22 +19,13 @@ public class Task {
 	private boolean m_has_alarm = false;
 	private boolean m_is_repeating = false;
 	
+	private long m_task_id = 0;
 	
 	//TODO Create list of AlarmInfoList
-	private AlarmInfoList m_alarm_list = null;
-	
-	//TODO repeating times/conditions
-	public Task(String name, AlarmInfoList alarm_list) {
+	private AlarmList m_alarm_list = null;
+	public Task(String name, long task_id) { 
 		m_name = name;
-		
-		m_alarm_list = alarm_list;
-		
-		//m_alarm_list.addAlarm(name, date)
-		
-		//TODO change rule
-		if(m_alarm_list.getNumAlarms() > 0) {
-			m_has_alarm = true;
-		}
+		m_task_id = task_id;
 	}
 	
 	/*
@@ -61,6 +53,29 @@ public class Task {
 		return m_description;
 	}
 	
+	/*
+	 * Task alarm methods
+	 */
+	public void addAlarm(Alarm alarm) {
+		m_alarm_list.addAlarm(alarm);
+	}
+	
+	public Alarm getAlarm(int i) {
+		return m_alarm_list.getAlarm(i);
+	}
+	
+	public void removeAlarm(int i) {
+		m_alarm_list.removeAlarm(i);
+	}
+	
+	/*
+	 * Overwrites alarm list
+	 * TODO: should this only be called in another constructor?
+	 */
+	public void setAlarmList(AlarmList alarm_list) {
+		m_alarm_list = alarm_list;
+	}
+	
 	//TODO add logic to determine next alarm date?s
 	public long getTimeMs() {
 		return 0;
@@ -74,7 +89,7 @@ public class Task {
 		return m_is_repeating;
 	}
 	
-	public AlarmInfoList getAlarmList() {
+	public AlarmList getAlarmList() {
 		return m_alarm_list;
 	}
 	

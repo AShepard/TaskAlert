@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.title51.TaskAlert.Alarm.AlarmInfo;
-import com.title51.TaskAlert.Alarm.AlarmInfoList;
+import com.title51.TaskAlert.Alarm.Alarm;
+import com.title51.TaskAlert.Alarm.AlarmList;
 import com.title51.TaskAlert.Alarm.AlarmListAdapter;
 import com.title51.TaskAlert.Alarm.AlarmService;
 import com.title51.TaskAlert.Task.Task;
-import com.title51.TaskAlert.Task.TaskAlarm;
+import com.title51.TaskAlert.Task.TaskAlarmView;
 import com.title51.TaskAlert.Task.TaskIntentFields;
 import com.title51.TaskAlert.Task.TaskRow;
 
@@ -47,9 +47,9 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
 	//private ListView m_alarm_container = null;
 	
 	private AlarmListAdapter m_list_adapter = null;
-	private ArrayList<AlarmInfo> m_alarm_list = null;
+	private ArrayList<Alarm> m_alarm_list = null;
 	
-	private AlarmInfoList m_alarm_info_list = null;
+	private AlarmList m_alarm_info_list = null;
 	
 	//TODO remove
 	private int m_counter = 0;
@@ -65,7 +65,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
         /*
          * TODO: Need to get Task info and alarm list from calling activity
          */
-        m_alarm_list = new ArrayList<AlarmInfo>();
+        m_alarm_list = new ArrayList<Alarm>();
     	//m_alarm_container=(ListView)findViewById(R.id.alarm_list);
     	m_list_adapter = new AlarmListAdapter(this, R.layout.alarm_info, m_alarm_list);
     	
@@ -150,12 +150,12 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	//Add alarm info to screen
     	
     	//create alarm view object
-    	TaskAlarm alarm_view = new TaskAlarm(getApplicationContext());
+    	TaskAlarmView alarm_view = new TaskAlarmView(getApplicationContext());
     	alarm_view.setText(Integer.toString(m_counter));
     	View view = (View) alarm_view.getView();
     	
     	
-    	AlarmInfo alarm_info = new AlarmInfo(Integer.toString(m_counter), null);
+    	Alarm alarm_info = new Alarm(Integer.toString(m_counter), null);
     	
             
     	
@@ -197,16 +197,18 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	/*
     	 * Get list of alarm rules and start them
     	 */
-    	AlarmInfoList alarm_list = getAlarmRules();
+    	AlarmList alarm_list = getAlarmRules();
     	
     	/*
-    	 * Create Task with inputed info, including alarm that 
+    	 * Create Task with inputed info, including alarm that
+    	 * TODO change ID 
     	 */
-    	m_task = new Task(task_name, alarm_list);
+    	m_task = new Task(task_name, -1);
     	
-    	AlarmInfoList list = m_task.getAlarmList(); 
+    	
+    	AlarmList list = m_task.getAlarmList(); 
     	int list_size = list.getNumAlarms();
-    	AlarmInfo task_alarm = list.getAlarm(list_size);
+    	Alarm task_alarm = list.getAlarm(list_size);
     	
     	String name = m_task.getName();
     	String message = "Alarms Created: " + String.valueOf(list_size-1) + " name of last alarm: " + String.valueOf(name);
@@ -215,7 +217,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	finish(m_task);
     } 
     
-    public AlarmInfoList getAlarmRules() {
+    public AlarmList getAlarmRules() {
     	if(m_alarm_list.size() != m_list_adapter.getCount()) {
     		//ERROR
     		toast("ERROR: alarm_list != list_adapter element count");
@@ -226,10 +228,10 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	 */
     	
     	int num_alarms = m_alarm_list.size();
-    	AlarmInfoList alarm_list = new AlarmInfoList();
+    	AlarmList alarm_list = new AlarmList();
     	
     	for(int i=0; i<num_alarms; i++) {
-    		AlarmInfo alarm = m_alarm_list.get(i);
+    		Alarm alarm = m_alarm_list.get(i);
     		alarm_list.addAlarm(alarm);
     		//TODO start alarms
     		/*
@@ -246,7 +248,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
      * pass alarm time
      * starts alarm and will run the intent (will only start if alarm not yet already started)
      */
-    public void startAlarm(AlarmInfo alarm) {
+    public void startAlarm(Alarm alarm) {
     	long alarm_time = -1;
     	//TODO: get next alarm time based on rule/time
     	//getNextAlarmTime(alarm)
