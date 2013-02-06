@@ -6,21 +6,19 @@ import java.util.GregorianCalendar;
 import com.title51.TaskAlert.Task.TaskRow;
 
 public class AlarmList {
-	private ArrayList m_alarm_list = null;
+	private ArrayList<Alarm> m_alarm_list = null;
 	private final int EXPECTED_ELEMENTS = 100;
 	
 	public AlarmList() {
-		m_alarm_list = new ArrayList<Alarm>(EXPECTED_ELEMENTS );
+		m_alarm_list = new ArrayList<Alarm>();
 	}
 	
 	public void addAlarm(Alarm alarm) {
 		m_alarm_list.add(alarm);
 	}
 	
-	public void addAlarm(String info, GregorianCalendar date) {
-		String alarm_info = info;
-		GregorianCalendar alarm_date = date;
-		Alarm alarm = new Alarm(alarm_info, alarm_date);
+	public void addAlarm(long alarm_id, GregorianCalendar alarm_date) {
+		Alarm alarm = new Alarm(alarm_id, alarm_date);
 		
 		addAlarm(alarm);
 	}
@@ -30,9 +28,7 @@ public class AlarmList {
 	}
 	
 	public Alarm getAlarm(int i) {
-		Alarm alarm = null;
-		
-		return alarm;
+		return m_alarm_list.get(i);
 	}
 	
 	public void removeAlarm(int i) {

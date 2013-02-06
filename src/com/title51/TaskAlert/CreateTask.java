@@ -12,6 +12,7 @@ import com.title51.TaskAlert.Task.Task;
 import com.title51.TaskAlert.Task.TaskAlarmView;
 import com.title51.TaskAlert.Task.TaskIntentFields;
 import com.title51.TaskAlert.Task.TaskRow;
+import com.title51.TaskAlert.XML.XmlReaderWriter;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -34,6 +35,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class CreateTask extends ListActivity implements TaskIntentFields {
@@ -51,6 +53,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
 	
 	private AlarmList m_alarm_info_list = null;
 	
+	private boolean m_edit_task = false;
 	//TODO remove
 	private int m_counter = 0;
 	 /** Called when the activity is first created. */
@@ -101,7 +104,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
 
     	m_dialog.setContentView(R.layout.alarm_dialog);
     	
-
+    	
     	/*
     	 * set up buttons for creating/canceling
     	 */
@@ -109,7 +112,12 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
         button_create.setOnClickListener(new OnClickListener() {
         @Override
             public void onClick(View v) {
-        		onAddAlarmView(v);
+        		//get time
+        		TimePicker time_picker = (TimePicker)m_dialog.findViewById(R.id.time_picker);
+        		int hour = time_picker.getCurrentHour();
+        		int minute = time_picker.getCurrentMinute();
+        		
+        		onAddAlarmView(hour, minute);
             }
         });
         
@@ -125,7 +133,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     }
     
     
-    public void onAddAlarmView(View v) {
+    public void onAddAlarmView(int hour, int minute) {
     	/*
     	 * Close dialog menu
     	 * add alarm view to layout
@@ -133,7 +141,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	m_dialog.dismiss();
     	m_dialog = null;
     	
-    	addAlarmView();
+    	addAlarmView(hour, minute);
     }
     
     public void onCancelAddAlarm(View v) {
@@ -146,19 +154,30 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     }
     
     
-    public void addAlarmView() {
+    public void addAlarmView(int hour, int minute) {
     	//Add alarm info to screen
     	
-    	//create alarm view object
-    	TaskAlarmView alarm_view = new TaskAlarmView(getApplicationContext());
-    	alarm_view.setText(Integer.toString(m_counter));
-    	View view = (View) alarm_view.getView();
+      	//create alarm view object
+    	TaskAlarmView alarm_view = new TaskAlarmView(getApplicationContext(), hour, minute);
     	
     	
-    	Alarm alarm_info = new Alarm(Integer.toString(m_counter), null);
+    	Calendar calendar = (Calendar)Calendar.getInstance();
+    	
+    	calendar.set(calendar.HOUR, hour);
+    	calendar.set(calendar.MINUTE, minute);
+    	calendar.set(calendar.SECOND, 0);
+    	
+    	//TODO: why do I need this???
+    	int day = calendar.getTime().getDay();
+    	calendar.set(calendar.DAY_OF_WEEK, day);
+    	
+    	//String message = "MS: " + calendar.getTimeInMillis() + "   Day: " + day + "   Date 1 : " + calendar.getTime().toString();
+    	//toast(message);
+    	
+    	//GregorianCalendar cal = (GregorianCalendar) calendar;
+    	Alarm alarm_info = new Alarm(m_counter, calendar);
     	
             
-    	
     	m_alarm_list.add(alarm_info);
     	
         m_list_adapter.notifyDataSetChanged();
@@ -205,14 +224,8 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	 */
     	m_task = new Task(task_name, -1);
     	
-    	
     	AlarmList list = m_task.getAlarmList(); 
     	int list_size = list.getNumAlarms();
-    	Alarm task_alarm = list.getAlarm(list_size);
-    	
-    	String name = m_task.getName();
-    	String message = "Alarms Created: " + String.valueOf(list_size-1) + " name of last alarm: " + String.valueOf(name);
-    	toast(message);
     	
     	finish(m_task);
     } 
@@ -234,10 +247,9 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     		Alarm alarm = m_alarm_list.get(i);
     		alarm_list.addAlarm(alarm);
     		//TODO start alarms
-    		/*
-		    	//Create Intent and Pending Intent to start alarm service
-		    	startAlarm(intent, alarm_time);
-    		 */
+	    	//Create Intent and Pending Intent to start alarm service
+	    	startAlarm(alarm);
+    		 
     	}
     	
     	return alarm_list;
@@ -249,19 +261,23 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
      * starts alarm and will run the intent (will only start if alarm not yet already started)
      */
     public void startAlarm(Alarm alarm) {
-    	long alarm_time = -1;
     	//TODO: get next alarm time based on rule/time
-    	//getNextAlarmTime(alarm)
-    	Intent intent = new Intent(this, AlarmEventActivity.class);
+    	long alarm_time = alarm.getTimeMs();
+    	
+    	Intent intent = new Intent(getApplicationContext(), AlarmEventActivity.class);
+    	
     	//TODO: Request code, need to keep changing this
     	PendingIntent pending_intent;
-    	pending_intent = PendingIntent.getActivity(this, 12341, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+    	pending_intent = PendingIntent.getActivity(getApplicationContext(), 12344, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 	
     	/*
     	 * Start alarms
-    	 */
-    	AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+    	 */		
+    	AlarmManager alarmManager = (AlarmManager)getSystemService(Activity.ALARM_SERVICE);
     	alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time, pending_intent);
+    	
+    	String message = "MS: " + alarm_time + "   Date : " + alarm.getDateStr();
+    	toast(message);
     }
     
     public void finish(Task task) {
@@ -271,8 +287,8 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	if(task!=null) {
 	    	insertIntoXML(task);
 	    	
-	    	//TODO remove
-			intent.putExtra(TASK_NAME, String.valueOf(task.getName()));
+	    	//TODO change what to return
+			//intent.putExtra(TASK_NAME, String.valueOf(task.getName()));
 			
 			this.setResult(RESULT_OK, intent);
 		} else {
@@ -283,15 +299,12 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     }
     
     /*
-     * TODO: Insert into XML
+     * Append or edit XML file with task
      */
     public void insertIntoXML(Task task) {
-    	int size = m_task.getAlarmList().getNumAlarms();
-    	//insert info into XML file
-    	for(int i=0; i<size; i++) {
-    		//TODO: place info
-    		
-    	}
+    	XmlReaderWriter xml = new XmlReaderWriter();
+    	
+    	xml.addItem(getApplicationContext(), task, m_edit_task);
     }
     
     //TODO: test
@@ -326,6 +339,6 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     }
     
     private void toast(String message) {
-    	Toast.makeText (getApplicationContext(), message, Toast.LENGTH_SHORT).show ();
+    	Toast.makeText (getApplicationContext(), message, Toast.LENGTH_LONG).show ();
     }
 }

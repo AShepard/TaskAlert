@@ -23,9 +23,12 @@ public class Task {
 	
 	//TODO Create list of AlarmInfoList
 	private AlarmList m_alarm_list = null;
+	
+	
 	public Task(String name, long task_id) { 
 		m_name = name;
 		m_task_id = task_id;
+		m_alarm_list = new AlarmList();
 	}
 	
 	/*
@@ -45,12 +48,24 @@ public class Task {
 		return str_date;
 	}
 	
+	public long getId() {
+		return m_task_id;
+	}
+	
+	public String getIdStr() {
+		return Long.toString(m_task_id);
+	}
+	
 	public String getName() {
 		return m_name;
 	}
 	
 	public String getDescription() {
 		return m_description;
+	}
+	
+	public void setId(long id) {
+		m_task_id = id;
 	}
 	
 	/*

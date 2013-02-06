@@ -34,7 +34,7 @@
                 
             </intent-filter>
         </activity>
-        <service android:name=".Alarm.AlarmService" />
+        
     </application>
 
     
