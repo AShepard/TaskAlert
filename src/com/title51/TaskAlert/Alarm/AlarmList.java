@@ -3,6 +3,7 @@ package com.title51.TaskAlert.Alarm;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
+import com.title51.TaskAlert.Task.TaskAlarmView;
 import com.title51.TaskAlert.Task.TaskRow;
 
 public class AlarmList {
@@ -17,8 +18,8 @@ public class AlarmList {
 		m_alarm_list.add(alarm);
 	}
 	
-	public void addAlarm(long alarm_id, GregorianCalendar alarm_date) {
-		Alarm alarm = new Alarm(alarm_id, alarm_date);
+	public void addAlarm(long alarm_id, GregorianCalendar alarm_date, TaskAlarmView alarm_view) {
+		Alarm alarm = new Alarm(alarm_id, alarm_date, alarm_view);
 		
 		addAlarm(alarm);
 	}

@@ -28,7 +28,7 @@ public class TaskRow extends LinearLayout {
         m_row_view =(RelativeLayout) layout_inflater.inflate(R.layout.row, null);
         
         
-        this.tvText = (TextView) m_row_view.findViewById(R.id.textView1);
+        this.tvText = (TextView) m_row_view.findViewById(R.id.tv_day);
 	}
 	
 	public TaskRow(Context context, AttributeSet attrs) {

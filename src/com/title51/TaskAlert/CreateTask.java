@@ -70,6 +70,8 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
          */
         m_alarm_list = new ArrayList<Alarm>();
     	//m_alarm_container=(ListView)findViewById(R.id.alarm_list);
+        
+        //TODO: why alarm_info?
     	m_list_adapter = new AlarmListAdapter(this, R.layout.alarm_info, m_alarm_list);
     	
     	setListAdapter(m_list_adapter);
@@ -175,7 +177,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	//toast(message);
     	
     	//GregorianCalendar cal = (GregorianCalendar) calendar;
-    	Alarm alarm_info = new Alarm(m_counter, calendar);
+    	Alarm alarm_info = new Alarm(m_counter, calendar, alarm_view);
     	
             
     	m_alarm_list.add(alarm_info);

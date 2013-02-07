@@ -141,7 +141,7 @@ public class TaskAlertActivity extends Activity implements TaskIntentFields  {
     	   	if(task_id%2==0) {
     	   		for(int alarm_counter=0; alarm_counter<5; alarm_counter++) {
 	    	   		int alarm_id = task_id*100 + alarm_counter; 
-	    	   		alarm_list.addAlarm(alarm_id, null);
+	    	   		alarm_list.addAlarm(alarm_id, null, null);
     	   		}
     	   	}
     	   	

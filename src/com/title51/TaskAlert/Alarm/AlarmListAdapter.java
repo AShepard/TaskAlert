@@ -25,16 +25,8 @@ public class AlarmListAdapter extends ArrayAdapter<Alarm> {
             View v = convertView;
             
             if (v == null) {
-                LayoutInflater vi = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.row, null);
-            }
-            Alarm alarm = items.get(position);
-            if (alarm != null) {
-                    TextView tv = (TextView) v.findViewById(R.id.tv_info);
-                    if (tv != null) {
-                    	tv.setText("Name: "+alarm.getAlarmIdStr()); 
-
-                    }
+            	Alarm alarm = items.get(position);
+            	v = alarm.getRowView();
             }
             
             return v;

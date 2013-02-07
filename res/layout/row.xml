@@ -20,17 +20,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@+id/textView1"
+        android:layout_marginLeft="50dp"
+        android:layout_toRightOf="@+id/tv_day"
         android:text="Time"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/b_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:text="Button" />
+        android:text="Cancel" />
     
 </RelativeLayout>
