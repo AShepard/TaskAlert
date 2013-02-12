@@ -159,10 +159,6 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     public void addAlarmView(int hour, int minute) {
     	//Add alarm info to screen
     	
-      	//create alarm view object
-    	TaskAlarmView alarm_view = new TaskAlarmView(getApplicationContext(), hour, minute);
-    	
-    	
     	Calendar calendar = (Calendar)Calendar.getInstance();
     	
     	calendar.set(calendar.HOUR, hour);
@@ -177,7 +173,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	//toast(message);
     	
     	//GregorianCalendar cal = (GregorianCalendar) calendar;
-    	Alarm alarm_info = new Alarm(m_counter, calendar, alarm_view);
+    	Alarm alarm_info = new Alarm(m_counter, calendar);
     	
             
     	m_alarm_list.add(alarm_info);

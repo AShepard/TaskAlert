@@ -15,15 +15,14 @@ public final class R {
         public static final int taskrow=0x7f020001;
     }
     public static final class id {
-        public static final int action_wrapper=0x7f050019;
-        public static final int alarm_scroll=0x7f050018;
+        public static final int action_wrapper=0x7f050018;
         public static final int alarm_wrapper=0x7f050016;
         public static final int b_add_alarm=0x7f050017;
         public static final int b_cancel=0x7f050010;
         public static final int b_dismiss=0x7f050007;
         public static final int b_snooze=0x7f050008;
         public static final int cancel_alarm=0x7f050004;
-        public static final int cancel_task=0x7f05001a;
+        public static final int cancel_task=0x7f050019;
         public static final int create_alarm=0x7f050003;
         public static final int create_task=0x7f05000b;
         public static final int description_edit=0x7f050015;

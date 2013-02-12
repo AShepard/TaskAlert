@@ -58,21 +58,20 @@
 	        android:onClick="onAddAlarm"
 	        
 	     />
-    	<ScrollView
-    	    android:id="@+id/alarm_scroll"
-    		android:layout_width="fill_parent"
-	    	android:layout_height="wrap_content"
-	    	android:fillViewport="true"
-	    	android:layout_below="@+id/b_add_alarm"
-   			>
-	    	<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-			    android:id="@+id/android:list"
-			    android:orientation="vertical"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    >
-			</ListView>
-	   	</ScrollView>
+
+    	
+
+    	<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/android:list"
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/b_add_alarm"
+		    android:fillViewport="true"
+		    android:layout_above="@+id/action_wrapper"
+		    
+		    >
+		</ListView>
 	   	
 	   	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		    android:id="@+id/action_wrapper"

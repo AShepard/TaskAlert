@@ -14,12 +14,11 @@ public class Alarm {
 	private long m_alarm_id = -1;
 	private Calendar m_date = null;
 	private boolean m_repeat = false;
-	private TaskAlarmView m_alarm_view = null;
+	//private TaskAlarmView m_alarm_view = null;
 	//TODO rename to reflect GUI item
-	public Alarm(long alarm_id, Calendar date, TaskAlarmView alarm_view) {
+	public Alarm(long alarm_id, Calendar date) {
 		m_alarm_id = alarm_id;
 		m_date = date;
-		m_alarm_view = alarm_view;
 	}
 	
 	public Calendar getDate() {
@@ -44,10 +43,6 @@ public class Alarm {
 	
 	public String getDateStr() {
 		return m_date.getTime().toString();
-	}
-	
-	public RelativeLayout getRowView() {
-		return m_alarm_view.getView();
 	}
 	
 }

@@ -18,8 +18,8 @@ public class AlarmList {
 		m_alarm_list.add(alarm);
 	}
 	
-	public void addAlarm(long alarm_id, GregorianCalendar alarm_date, TaskAlarmView alarm_view) {
-		Alarm alarm = new Alarm(alarm_id, alarm_date, alarm_view);
+	public void addAlarm(long alarm_id, GregorianCalendar alarm_date) {
+		Alarm alarm = new Alarm(alarm_id, alarm_date);
 		
 		addAlarm(alarm);
 	}

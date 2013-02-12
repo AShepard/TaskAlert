@@ -109,7 +109,7 @@ public class XmlReaderWriter {
 		                	 */
 		                	long alarm_id = Long.parseLong(parser.getAttributeValue("", ALARM_ID_ATTR));
 		                	
-		                	current_alarm = new Alarm(alarm_id, null, null);
+		                	current_alarm = new Alarm(alarm_id, null);
 		                	
 		                }
 		                break;
