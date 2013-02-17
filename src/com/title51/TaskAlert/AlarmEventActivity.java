@@ -18,5 +18,6 @@ public class AlarmEventActivity extends Activity{
         setContentView(R.layout.alarm_event);
         
         //TODO: get info for next alarm and start that
+        
     }
 }

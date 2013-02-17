@@ -30,16 +30,14 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    >
-		<ScrollView
-		    android:id="@+id/scrollView1"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content" >
-	
-		    <LinearLayout android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:background="@drawable/taskrow"
-                          android:id="@+id/llContainer"/>	
-		</ScrollView>
+		<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/android:list"
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:fillViewport="true"
+		    >
+		</ListView>
 	</RelativeLayout>
 
 </LinearLayout>

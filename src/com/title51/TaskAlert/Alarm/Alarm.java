@@ -14,7 +14,7 @@ public class Alarm {
 	private long m_alarm_id = -1;
 	private Calendar m_date = null;
 	private boolean m_repeat = false;
-	//private TaskAlarmView m_alarm_view = null;
+	
 	//TODO rename to reflect GUI item
 	public Alarm(long alarm_id, Calendar date) {
 		m_alarm_id = alarm_id;

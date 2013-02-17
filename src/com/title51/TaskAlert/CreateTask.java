@@ -9,7 +9,6 @@ import com.title51.TaskAlert.Alarm.AlarmList;
 import com.title51.TaskAlert.Alarm.AlarmListAdapter;
 import com.title51.TaskAlert.Alarm.AlarmService;
 import com.title51.TaskAlert.Task.Task;
-import com.title51.TaskAlert.Task.TaskAlarmView;
 import com.title51.TaskAlert.Task.TaskIntentFields;
 import com.title51.TaskAlert.Task.TaskRow;
 import com.title51.TaskAlert.XML.XmlReaderWriter;
@@ -71,8 +70,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
         m_alarm_list = new ArrayList<Alarm>();
     	//m_alarm_container=(ListView)findViewById(R.id.alarm_list);
         
-        //TODO: why alarm_info?
-    	m_list_adapter = new AlarmListAdapter(this, R.layout.alarm_info, m_alarm_list);
+    	m_list_adapter = new AlarmListAdapter(this, R.layout.row, m_alarm_list);
     	
     	setListAdapter(m_list_adapter);
     }

@@ -41,6 +41,8 @@ public class XmlReaderWriter {
 	
 	private static String ALARM_ID_ATTR = "ALARM_ID_ATTR";
 	
+	private static String LAST_ALARM_ID_TAG= "LAST_ALARM_ID_TAG";
+	
 	private int m_num_tasks = 0;
 	
 	public ArrayList<Task> getTaskList(Context context) {
@@ -72,8 +74,15 @@ public class XmlReaderWriter {
 		    FileInputStream input_stream = context.openFileInput(file_name); 
 		    InputStreamReader stream_reader = new InputStreamReader(input_stream);
 		    
+		    /*
+		     * TODO: TEST:
+		     * This is to read entire file for debugging
+		     */
+	//	    readFileInput(input_stream);
+		    
 		    // auto-detect the encoding from the stream
 		    parser.setInput(stream_reader);
+		    String string = parser.getText();
 		    int eventType = parser.getEventType();
 		    Task current_task= null;
 		    Alarm current_alarm=null;
@@ -136,6 +145,8 @@ public class XmlReaderWriter {
 		                } else if (name.equalsIgnoreCase(ALARM_TAG)) {
 		                	//TODO: 
 		                	current_task.addAlarm(current_alarm);
+		                } else if(name.equalsIgnoreCase(LAST_ALARM_ID_TAG)) {
+		                	
 		                }
 		                break;
 		            }
@@ -151,6 +162,23 @@ public class XmlReaderWriter {
 		}
 		
 		return task_list;
+	}
+	
+	public void readFileInput(FileInputStream input_stream) {
+		StringBuffer fileContent = new StringBuffer("");
+
+		byte[] buffer = new byte[1024];
+		int length;
+		try {
+			while ((length = input_stream.read(buffer)) != -1) {
+			    fileContent.append(new String(buffer));
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String file_content = fileContent.toString();
+		file_content = file_content;
 	}
 	
 	
