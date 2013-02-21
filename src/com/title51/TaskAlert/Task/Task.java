@@ -75,6 +75,10 @@ public class Task {
 		m_alarm_list.addAlarm(alarm);
 	}
 	
+	public int getNumAlarms() {
+		return m_alarm_list.getNumAlarms();
+	}
+	
 	public Alarm getAlarm(int i) {
 		return m_alarm_list.getAlarm(i);
 	}

@@ -28,6 +28,10 @@ public class AlarmList {
 		return m_alarm_list.size();
 	}
 	
+	public ArrayList<Alarm> getList() {
+		return m_alarm_list;
+	}
+	
 	public Alarm getAlarm(int i) {
 		return m_alarm_list.get(i);
 	}

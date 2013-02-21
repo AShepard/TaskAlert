@@ -53,26 +53,59 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
 	private AlarmList m_alarm_info_list = null;
 	
 	private boolean m_edit_task = false;
-	//TODO remove
-	private int m_counter = 0;
+	
+	private XmlReaderWriter m_xml =null;
+	
+	private long m_last_alarm_id = -1;
+	private long m_last_task_id = -1;
+	private long m_current_task_id = -1;
+	
 	 /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_form);
+        int task_id = -1;
         
         m_name = (EditText) findViewById(R.id.name_edit);
         m_description = (EditText) findViewById(R.id.description_edit);
 
-        /*
-         * TODO: Need to get Task info and alarm list from calling activity
-         */
-        m_alarm_list = new ArrayList<Alarm>();
-    	//m_alarm_container=(ListView)findViewById(R.id.alarm_list);
+       
+    	boolean edit_task = false;
+    	//Get last alarm id
+    	readXML();
+    	
+    	/*
+    	 * If:   Edit item, extract data from XML
+    	 * else: Create new objects 
+    	 */
+    	if(edit_task) {
+    		m_task = getTask(task_id);
+    		m_last_task_id = m_task.getId();
+    		m_alarm_list = m_task.getAlarmList().getList();
+    		
+    		displayTask();
+    		
+    	} else {
+    		m_alarm_list = new ArrayList<Alarm>();
+    	}
         
     	m_list_adapter = new AlarmListAdapter(this, R.layout.row, m_alarm_list);
     	
     	setListAdapter(m_list_adapter);
+    }
+    
+    public void readXML() {
+    	m_xml = new XmlReaderWriter();
+    	m_last_task_id = m_xml.getLastTaskId(getApplicationContext());
+    	m_last_alarm_id = m_xml.getLastAlarmId(getApplicationContext());
+    }
+    
+    
+    public Task getTask(int task_id) {
+    	Task task = null;
+    	
+    	return task;
     }
     
     public void onAddAlarm(View v)
@@ -80,15 +113,21 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	/*
     	 * Create alarm and add view to alarm container
     	 */
-    
     	Button  b_add = (Button) v;
-    	toast("onAddAlarm");
+    	//toast("onAddAlarm");
     	if(b_add == null) {
     		//ERROR
     		toast("Error: checkbox is null");
     	}
     	
     	createAlarm();
+    }
+    
+    /*
+     * Display all aspects of a task in edit task screen
+     */
+    public void displayTask() {
+    	//m_task
     }
     
     //http://androidresearch.wordpress.com/2012/04/16/creating-and-displaying-a-custom-dialog-in-android/
@@ -171,14 +210,14 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	//toast(message);
     	
     	//GregorianCalendar cal = (GregorianCalendar) calendar;
-    	Alarm alarm_info = new Alarm(m_counter, calendar);
+    	m_last_alarm_id++;
+    	Alarm alarm_info = new Alarm(m_last_alarm_id, calendar);
     	
             
     	m_alarm_list.add(alarm_info);
     	
         m_list_adapter.notifyDataSetChanged();
         
-    	m_counter++;
 
     }
     
@@ -216,14 +255,16 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	
     	/*
     	 * Create Task with inputed info, including alarm that
-    	 * TODO change ID 
+    	 * if NULL, then new task
     	 */
-    	m_task = new Task(task_name, -1);
+    	if(m_task == null) {
+    		m_task = new Task(task_name, m_last_task_id+1);
+    	}
     	
-    	AlarmList list = m_task.getAlarmList(); 
-    	int list_size = list.getNumAlarms();
+    	m_task.setAlarmList(alarm_list);
     	
     	finish(m_task);
+    	//toast("Click Create Task, ID: " + m_task.getId() + "  last_task_id: " + m_last_task_id + " last alarm: " + m_last_alarm_id);
     } 
     
     public AlarmList getAlarmRules() {
@@ -273,7 +314,7 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
     	alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time, pending_intent);
     	
     	String message = "MS: " + alarm_time + "   Date : " + alarm.getDateStr();
-    	toast(message);
+    	//toast(message);
     }
     
     public void finish(Task task) {
@@ -298,9 +339,8 @@ public class CreateTask extends ListActivity implements TaskIntentFields {
      * Append or edit XML file with task
      */
     public void insertIntoXML(Task task) {
-    	XmlReaderWriter xml = new XmlReaderWriter();
     	
-    	xml.addItem(getApplicationContext(), task, m_edit_task);
+    	m_xml.addItem(getApplicationContext(), task, m_edit_task);
     }
     
     //TODO: test

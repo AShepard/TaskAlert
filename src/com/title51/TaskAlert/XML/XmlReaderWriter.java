@@ -33,6 +33,10 @@ public class XmlReaderWriter {
 	 * TODO: move to interface
 	 */
 	private static String TASK_LIST_TAG = "TASKLIST";
+	
+	private static String LAST_TASK_ID_ATTR = "LAST_TASK_ID_ATTR";
+	private static String LAST_ALARM_ID_ATTR = "LAST_ALARM_ID_ATTR";
+	
 	private static String TASK_TAG = "TASK";
 	private static String ALARM_TAG = "ALARM";
 	
@@ -41,49 +45,109 @@ public class XmlReaderWriter {
 	
 	private static String ALARM_ID_ATTR = "ALARM_ID_ATTR";
 	
-	private static String LAST_ALARM_ID_TAG= "LAST_ALARM_ID_TAG";
 	
-	private int m_num_tasks = 0;
+	private long m_last_task_id = -1;
+	private long m_last_alarm_id = -1;
+	
+	ArrayList<Task> m_task_list = null;
+	
 	
 	public ArrayList<Task> getTaskList(Context context) {
-		ArrayList<Task> task_list = null;
-		try {
-			task_list = parseXMLFile(context, null);
-		} catch (Exception e) {
-			task_list = null;
+		if(m_task_list == null) {
+			try {
+				if(xmlFileExists(context)) {
+					parseXMLFile(context);
+				} 
+			} catch (XmlPullParserException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
-		return task_list;
+		return m_task_list;
 	}
+	
+	
+	public long getLastAlarmId(Context context) {
+		if(m_last_alarm_id <= 0) {
+			try {
+			
+				if(xmlFileExists(context)) {
+					parseXMLFile(context);
+				} else {
+					m_last_alarm_id = 0;
+				}
+			} catch (XmlPullParserException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return m_last_alarm_id;
+	}
+	
+	public long getLastTaskId(Context context) {
+		if(m_last_task_id <= 0) {
+			try {
+			
+				if(xmlFileExists(context)) {
+					parseXMLFile(context);
+				} else {
+					m_last_task_id = 0;
+				}
+			} catch (XmlPullParserException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return m_last_task_id;
+	}
+	
+	
+	public Task getTask(Context context, int id) {
+		Task task = null;
+		
+		if(m_task_list == null) {
+			try {
+				parseXMLFile(context);
+			} catch (Exception e) {
+				m_last_alarm_id = -1;
+			}
+		}
+		
+		task = m_task_list.get(id);
+		
+		return task; 
+	}
+	
+	
 	/*
 	 * read input and return list of elements
 	 * http://androidideasblog.blogspot.com/2010/01/read-write-and-parse-xml-file-in.html
 	 */
-	private ArrayList<Task> parseXMLFile(Context context, Task new_task) throws XmlPullParserException, IOException {
+	private void parseXMLFile(Context context) throws XmlPullParserException, IOException {
 		//reset counter used to give new tasks ID
-		m_num_tasks=0;
 		
-		ArrayList<Task> task_list = new ArrayList<Task>();
+		m_task_list = new ArrayList<Task>();
 		XmlPullParser parser = Xml.newPullParser();
-		long target_id = -1;
-		if(new_task != null) {
-			target_id = new_task.getId();
-		}
+		
 		try {
 			String file_name = FILE_NAME;//Environment.getExternalStorageDirectory()+FILE_NAME;
 		    FileInputStream input_stream = context.openFileInput(file_name); 
 		    InputStreamReader stream_reader = new InputStreamReader(input_stream);
 		    
-		    /*
-		     * TODO: TEST:
-		     * This is to read entire file for debugging
-		     */
-	//	    readFileInput(input_stream);
-		    
 		    // auto-detect the encoding from the stream
 		    parser.setInput(stream_reader);
-		    String string = parser.getText();
-		    int eventType = parser.getEventType();
+		    
 		    Task current_task= null;
 		    Alarm current_alarm=null;
 		    boolean done = false;
@@ -91,6 +155,7 @@ public class XmlReaderWriter {
 		    /*
 		     * For each element read, parse into list
 		     */
+		    int eventType = parser.getEventType();
 		    while (eventType != XmlPullParser.END_DOCUMENT && !done){
 		        String name = null;
 		        switch (eventType){
@@ -100,7 +165,9 @@ public class XmlReaderWriter {
 		            case XmlPullParser.START_TAG:
 		                name = parser.getName();
 		                if (name.equalsIgnoreCase(TASK_LIST_TAG)){
-		                	//TODO instantiate list here?
+		                	m_last_task_id = Long.parseLong(parser.getAttributeValue("", LAST_TASK_ID_ATTR));
+		                	m_last_alarm_id = Long.parseLong(parser.getAttributeValue("", LAST_ALARM_ID_ATTR));
+		                	
 		                } else if (name.equalsIgnoreCase(TASK_TAG)){
 		                	/*
 		                	 * Create new Task and extract task attributes
@@ -129,25 +196,17 @@ public class XmlReaderWriter {
 		                		current_task != null){
 		                	
 		                	/*
-		                	 * If this is a task we are edditing, insert eddited one instead
-		                	 * Discards old one
+		                	 * Add task to list
 		                	 */
-		                	if(current_task.getId() == target_id) {
-		                		task_list.add(new_task);
-		                	} else {
-		                		task_list.add(current_task);
-		                	}
+		                	m_task_list.add(current_task);
 		                	
-		                	m_num_tasks++;
 		                	current_task = null;
 		                } else if (name.equalsIgnoreCase(TASK_LIST_TAG)){
 		                    done = true;
 		                } else if (name.equalsIgnoreCase(ALARM_TAG)) {
 		                	//TODO: 
 		                	current_task.addAlarm(current_alarm);
-		                } else if(name.equalsIgnoreCase(LAST_ALARM_ID_TAG)) {
-		                	
-		                }
+		                } 
 		                break;
 		            }
 		        eventType = parser.next();
@@ -161,8 +220,9 @@ public class XmlReaderWriter {
 			e.printStackTrace();
 		}
 		
-		return task_list;
+		
 	}
+	
 	
 	public void readFileInput(FileInputStream input_stream) {
 		StringBuffer fileContent = new StringBuffer("");
@@ -190,39 +250,43 @@ public class XmlReaderWriter {
 	 */
 	
 	public void addItem(Context context, Task task, boolean edit_item) {
-		/*
-		 * Read in file and get elements
+		
+		/* 
+		 * if new: Read list and add to end of file
 		 */
-		ArrayList<Task> task_list = null;
-		try {
-			
-			/*
-			 * Only read if file exists
-			 */
-			if(xmlFileExists(context)) { 
-				task_list = parseXMLFile(context, null);
-			} else {
-				task_list = new ArrayList<Task>();
-			}
-			
-			/* 
-			 * if new: Read list and add to end of file
-			 */
-			if(!edit_item) {
-				//give task new ID
-				task.setId(m_num_tasks);
-				task_list.add(task);
-			} 
-		} catch (XmlPullParserException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		if(!edit_item) {
+			//Add alarm
+			addTask(task);
+		} 
 		
 		/*
 		 * Write edited list back to file
 		 */
-		writeFile(context, task_list);
+		writeFile(context, m_task_list);
+	}
+	
+	public void addTask(Task task) {
+		int task_id = (int)task.getId();
+		if(m_task_list == null) {
+			m_task_list = new ArrayList<Task>();
+		}
+		
+		m_task_list.add(task);
+			
+		if(task_id > m_last_task_id) {
+			m_last_task_id = task_id;
+		}
+		
+		for(int i=0; i<task.getNumAlarms(); i++) {
+			Alarm alarm = task.getAlarm(i);
+			long alarm_id = alarm.getAlarmId();
+			
+			if(alarm_id> m_last_alarm_id) {
+				m_last_alarm_id = alarm_id;
+			}
+		}
+		
+		
 	}
 	
 	private boolean xmlFileExists(Context context) throws XmlPullParserException, IOException {
@@ -247,9 +311,8 @@ public class XmlReaderWriter {
 	//http://xjaphx.wordpress.com/2011/10/27/android-xml-adventure-create-write-xml-data/
 	public void writeFile(Context context, ArrayList<Task> task_list) {
         final String TESTSTRING = new String("Hello Android");
-        
         /*
-         * Wrte data to serializer to create file
+         * Write data to serializer to create file
          */
         XmlSerializer xmlSerializer = Xml.newSerializer();
         StringWriter writer = new StringWriter();
@@ -261,12 +324,16 @@ public class XmlReaderWriter {
 	        //Create list tag
 	        xmlSerializer.startTag("", TASK_LIST_TAG);
 	        
-	        int num_tasks = task_list.size();
+	        String s_last_task_id = (String)String.valueOf(m_last_task_id);
+	        String s_last_alarm_id = (String)String.valueOf(m_last_alarm_id);
+	        
+	        xmlSerializer.attribute("", LAST_TASK_ID_ATTR, s_last_task_id);
+        	xmlSerializer.attribute("", LAST_ALARM_ID_ATTR, s_last_alarm_id);
 	        
 	        /*
 	         * Create XML entries for each task
 	         */
-	        
+        	int num_tasks = task_list.size();
 	        for(int task_counter=0; task_counter<num_tasks; task_counter++) {
 	        	Task task = task_list.get(task_counter);
 	        	
@@ -283,7 +350,6 @@ public class XmlReaderWriter {
 	        	/*
 	        	 * Add alarms
 	        	 */
-	        	
 	        	AlarmList alarm_list = task.getAlarmList();
 	        	
 	        	if(alarm_list != null) {
